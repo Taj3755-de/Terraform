@@ -1,0 +1,34 @@
+
+[datastore1/New_centos_7.iso
+
+
+clone {
+    template_uuid = data.vsphere_virtual_machine.template.id
+
+    customize {
+      linux_options {
+        host_name = "vm-one"
+        domain    = "vm-one.aigilx.local"
+      }
+
+      network_interface {
+        ipv4_address    = "172.16.10.231"
+        ipv4_netmask    = 24
+        dns_server_list = ["172.19.40.50", "172.16.10.10"]
+      }
+
+      ipv4_gateway = "172.16.10.1"
+    }
+  }
+
+  # Execute script on remote vm after this creation
+  provisioner "remote-exec" {
+    script = "scripts/example-script.sh"
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = "VMware1!"
+      host     = vsphere_virtual_machine.demo.default_ip_address 
+    }
+  }
+}
